@@ -38,6 +38,11 @@
     <div class="progress centrar">
       <div class="pointer"></div>
     </div>
+
+    <a
+      href="https://polyester-aftershave-211.notion.site/325fa841224d4603ab293831356ca5fd?v=13aafc1a25184791b581443a020cb848"
+      >enlace</a
+    >
     <script>
       const d = document,
         $progress = d.querySelector(".progress"),
@@ -51,20 +56,28 @@
         // console.log(r.x);
         // console.log(r.layerX);
         // console.log($pointer);
-        let progressX = $progress.getBoundingClientRect(),
-          pointerX = $pointer.getBoundingClientRect();
+        let progressInfo = $progress.getBoundingClientRect(),
+          pointerInfo = $pointer.getBoundingClientRect();
+        // console.log(r);
 
-        if (pointerX.x >= progressX.x && pointerX.right <= progressX.right) {
+        if (r.pageX > progressInfo.x && r.pageX + 14 < progressInfo.right) {
           $pointer.setAttribute(
             "style",
-            `transform: translate(${r.pageX - pos}px);`
+            // `transform: translate(${r.pageX - progressInfo.x}px);`
+            `left: ${r.pageX - progressInfo.x}px;`
           );
+          console.log(r.pageX, r.pageX + 14, progressInfo.right);
         }
-        if (pointerX.x <= progressX.x) {
-            $pointer.setAttribute(
-            "style",
-            `transform: translate(0px);`
-          );
+
+        // Si X del cursor es menor que la barra, se deja pointer en posición 0
+        if (r.pageX <= progressInfo.x) {
+          // $pointer.setAttribute("style", `transform: translate(0px);`);
+          $pointer.setAttribute("style", "left: 0px;");
+        }
+
+        if (r.pageX >= progressInfo.right) {
+          $pointer.setAttribute("style", "left: 100%;");
+          // console
         }
       };
 
@@ -74,8 +87,8 @@
           d.addEventListener("mousemove", remove);
           if (!pos) pos = e.pageX;
           // DOM para ver la info extra del elemento
-          console.log($pointer.getBoundingClientRect().right);
-          console.log($progress.getBoundingClientRect().right);
+          // console.log("progress:", $progress.getBoundingClientRect());
+          // console.log("pointer:", $pointer.getBoundingClientRect().x);
         }
       };
       $pointer.addEventListener("mousedown", evento);
