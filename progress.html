@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: rgb(0, 0, 0);
+      }
+
+      .progress {
+        display: flex;
+        align-items: center;
+        width: 500px;
+        max-height: 2px;
+        border: 1px solid rgb(255, 255, 255);
+        border-radius: 100px;
+      }
+
+      .centrar {
+        position: relative;
+        left: 200px;
+        top: 400px;
+      }
+
+      .pointer {
+        position: relative;
+        width: 14px;
+        height: 14px;
+        background-color: rgb(255, 255, 255);
+        border-radius: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress centrar">
+      <div class="pointer"></div>
+    </div>
+    <script>
+      const d = document,
+        $progress = d.querySelector(".progress"),
+        $pointer = d.querySelector(".pointer");
+
+      const remove = (r) => {
+        // console.log(r.clientX);
+        // console.log(r.screenX);
+        // console.log(r.pageX);
+        // console.log(r.offsetX);
+        // console.log(r.x);
+        // console.log(r.layerX);
+        // console.log($pointer);
+        let progressX = $progress.getBoundingClientRect(),
+          pointerX = $pointer.getBoundingClientRect();
+
+        if (pointerX.x >= progressX.x && pointerX.right <= progressX.right) {
+          $pointer.setAttribute(
+            "style",
+            `transform: translate(${r.pageX - pos}px);`
+          );
+        }
+        if (pointerX.x <= progressX.x) {
+            $pointer.setAttribute(
+            "style",
+            `transform: translate(0px);`
+          );
+        }
+      };
+
+      let pos;
+      const evento = (e) => {
+        if (e.buttons == 1) {
+          d.addEventListener("mousemove", remove);
+          if (!pos) pos = e.pageX;
+          // DOM para ver la info extra del elemento
+          console.log($pointer.getBoundingClientRect().right);
+          console.log($progress.getBoundingClientRect().right);
+        }
+      };
+      $pointer.addEventListener("mousedown", evento);
+
+      d.addEventListener("mouseup", () => {
+        d.removeEventListener("mousemove", remove);
+        console.log("removido");
+      });
+    </script>
+  </body>
+</html>
