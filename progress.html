@@ -31,6 +31,7 @@
         height: 14px;
         background-color: rgb(255, 255, 255);
         border-radius: 100px;
+        opacity: 50%;
       }
     </style>
   </head>
@@ -60,24 +61,25 @@
           pointerInfo = $pointer.getBoundingClientRect();
         // console.log(r);
 
-        if (r.pageX > progressInfo.x && r.pageX + 14 < progressInfo.right) {
+        if (r.pageX - 7 > progressInfo.x && r.pageX + 7 < progressInfo.right) {
           $pointer.setAttribute(
             "style",
-            // `transform: translate(${r.pageX - progressInfo.x}px);`
-            `left: ${r.pageX - progressInfo.x}px;`
+            `left: ${r.pageX - 7 - progressInfo.x}px;`
           );
-          console.log(r.pageX, r.pageX + 14, progressInfo.right);
+          // console.log(r.pageX, r.pageX + 14, progressInfo.right);
         }
 
         // Si X del cursor es menor que la barra, se deja pointer en posición 0
         if (r.pageX <= progressInfo.x) {
-          // $pointer.setAttribute("style", `transform: translate(0px);`);
           $pointer.setAttribute("style", "left: 0px;");
         }
 
         if (r.pageX >= progressInfo.right) {
-          $pointer.setAttribute("style", "left: 100%;");
-          // console
+          // $pointer.setAttribute("style", "left: 100%;");
+          // $pointer.setAttribute("style", `left: ${$progress.clientWidth - 14}px;`);
+          // $pointer.setAttribute("style", `left: ${$progress.clientWidth - 14}px;`);
+
+          console.log($pointer.style.left);
         }
       };
 
