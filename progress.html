@@ -10,6 +10,17 @@
         background-color: rgb(0, 0, 0);
       }
 
+      /* SIRVE PARA NO HACER CLICK ESPECIFICAMENTE EN EL PROGRESS */
+      .container {
+        display: flex;
+        align-items: center;
+        position: relative;
+        left: 200px;
+        top: 400px;
+        height: 14px;
+        width: fit-content;
+      }
+
       .progress {
         display: flex;
         align-items: center;
@@ -19,25 +30,27 @@
         border-radius: 100px;
       }
 
-      .centrar {
+      /* .centrar {
         position: relative;
         left: 200px;
         top: 400px;
-      }
+      } */
 
       .pointer {
         position: relative;
         width: 14px;
         height: 14px;
-        background-color: rgb(255, 255, 255);
+        background-color: rgb(255, 0, 0);
         border-radius: 100px;
-        opacity: 50%;
+        /* opacity: 50%; */
       }
     </style>
   </head>
   <body>
-    <div class="progress centrar">
-      <div class="pointer"></div>
+    <div class="container">
+      <div class="progress centrar">
+        <div class="pointer"></div>
+      </div>
     </div>
 
     <a
@@ -47,8 +60,10 @@
     <script>
       const d = document,
         $progress = d.querySelector(".progress"),
-        $pointer = d.querySelector(".pointer");
+        $pointer = d.querySelector(".pointer"),
+        $container = d.querySelector(".container");
 
+      // ------ ES LA FUNCIÓN QUE SE AÑADE Y SE ELIMINA A LOS EVENTOS ------
       const remove = (r) => {
         // console.log(r.clientX);
         // console.log(r.screenX);
@@ -57,48 +72,51 @@
         // console.log(r.x);
         // console.log(r.layerX);
         // console.log($pointer);
+
+        // DOM para ver la info extra del elemento
         let progressInfo = $progress.getBoundingClientRect(),
           pointerInfo = $pointer.getBoundingClientRect();
-        // console.log(r);
 
-        if (r.pageX - 7 > progressInfo.x && r.pageX + 7 < progressInfo.right) {
+        if (r.pageX - 7 > progressInfo.x && r.pageX + 8 < progressInfo.right) {
+          // Se resta 7 para que el pointer este en el centro del mouse
+          // Se usa el 8 por el border de 1px en el progress
           $pointer.setAttribute(
             "style",
             `left: ${r.pageX - 7 - progressInfo.x}px;`
           );
-          // console.log(r.pageX, r.pageX + 14, progressInfo.right);
         }
 
-        // Si X del cursor es menor que la barra, se deja pointer en posición 0
         if (r.pageX <= progressInfo.x) {
+          // Si X del cursor es menor que la barra, se deja pointer en posición 0
           $pointer.setAttribute("style", "left: 0px;");
         }
 
         if (r.pageX >= progressInfo.right) {
-          // $pointer.setAttribute("style", "left: 100%;");
-          // $pointer.setAttribute("style", `left: ${$progress.clientWidth - 14}px;`);
-          // $pointer.setAttribute("style", `left: ${$progress.clientWidth - 14}px;`);
-
-          console.log($pointer.style.left);
+          // Si se pasa de la barra progress se coloca al limite
+          // Se resta el volumen para que no se salga
+          $pointer.setAttribute(
+            "style",
+            `left: ${$progress.clientWidth - $pointer.clientWidth}px;`
+          );
         }
       };
 
-      let pos;
+      // ------ AÑADE EL EVENTO AL HACER CLICK IZQUIEDO ------
       const evento = (e) => {
         if (e.buttons == 1) {
           d.addEventListener("mousemove", remove);
-          if (!pos) pos = e.pageX;
-          // DOM para ver la info extra del elemento
-          // console.log("progress:", $progress.getBoundingClientRect());
-          // console.log("pointer:", $pointer.getBoundingClientRect().x);
         }
       };
       $pointer.addEventListener("mousedown", evento);
 
+      // ------ REMUEVE EL EVENTO AL LEVANTAR EL MOUSE ------
       d.addEventListener("mouseup", () => {
         d.removeEventListener("mousemove", remove);
         console.log("removido");
       });
+
+      // ------ SE AÑADE EL MISMO EVENTO AL CONTAINER ------
+      $container.addEventListener("mousedown", evento);
     </script>
   </body>
 </html>
