@@ -17,8 +17,10 @@
         position: relative;
         left: 200px;
         top: 400px;
-        height: 14px;
+        height: 24px;
         width: fit-content;
+
+        background-color: rgba(0, 255, 255, 0.443);
       }
 
       .progress {
@@ -40,42 +42,92 @@
         position: relative;
         width: 14px;
         height: 14px;
-        background-color: rgb(255, 0, 0);
+        background-color: rgba(255, 0, 0, 0.416);
         border-radius: 100px;
         /* opacity: 50%; */
+      }
+
+      .onMinute {
+        display: none;
+        position: relative;
+        left: -10px;
+        top: -20px;
+        width: 30px;
+        height: 10px;
+        background-color: rgba(180, 180, 180, 0.416);
+      }
+
+      /* hover de los minutos */
+      .container:hover .onMinute {
+        display: block;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="progress centrar">
-        <div class="pointer"></div>
+        <div class="pointer">
+          <div class="onMinute"></div>
+        </div>
       </div>
     </div>
 
-    <a
-      href="https://polyester-aftershave-211.notion.site/325fa841224d4603ab293831356ca5fd?v=13aafc1a25184791b581443a020cb848"
-      >enlace</a
-    >
     <script>
       const d = document,
         $progress = d.querySelector(".progress"),
         $pointer = d.querySelector(".pointer"),
-        $container = d.querySelector(".container");
+        $container = d.querySelector(".container"),
+        $onMinute = d.querySelector(".onMinute");
+
+      // DOM para ver la info extra del elemento
+      let progressInfo = $progress.getBoundingClientRect(),
+        pointerInfo = $pointer.getBoundingClientRect();
+
+      // Solo falta que se mueva el puntero al hacer click sin necesidad de moverlo manualmente.
+      const moveToPosition = (e) => {
+        // Posicion del puntero respecto al elemento.
+        let pointerPosition = e.pageX - $container.offsetLeft;
+
+        if (pointerPosition > 7 && pointerPosition < progressInfo.width - 7) {
+          $pointer.setAttribute(
+            "style",
+            "left: " + (pointerPosition - 7) + "px"
+          );
+        }
+        if (pointerPosition <= 7) {
+          $pointer.setAttribute("style", "left: 0px");
+        }
+        if (pointerPosition >= $progress.clientWidth - 7) {
+          $pointer.setAttribute(
+            "style",
+            "left: " + ($progress.clientWidth - $pointer.clientWidth) + "px"
+          );
+        }
+
+        // e.pageX - $container.offsetLeft
+        // e.offsetX
+        $progress.setAttribute(
+          "style",
+          `background-image: linear-gradient(to right ,white ${pointerPosition}px, black -100%);`
+        );
+      };
 
       // ------ ES LA FUNCIÓN QUE SE AÑADE Y SE ELIMINA A LOS EVENTOS ------
       const remove = (r) => {
         // console.log(r.clientX);
         // console.log(r.screenX);
         // console.log(r.pageX);
-        // console.log(r.offsetX);
+        // console.log(r.offsetX); Posicion del puntero respecto al elemento.
         // console.log(r.x);
         // console.log(r.layerX);
-        // console.log($pointer);
 
-        // DOM para ver la info extra del elemento
-        let progressInfo = $progress.getBoundingClientRect(),
-          pointerInfo = $pointer.getBoundingClientRect();
+        // Pone un fondo blanco a la barra de progreso cuando se mueve el puntero
+        $progress.setAttribute(
+          "style",
+          `background-image: linear-gradient(to right ,white ${
+            r.pageX - progressInfo.x
+          }px, black -100%);`
+        );
 
         if (r.pageX - 7 > progressInfo.x && r.pageX + 8 < progressInfo.right) {
           // Se resta 7 para que el pointer este en el centro del mouse
@@ -99,11 +151,19 @@
             `left: ${$progress.clientWidth - $pointer.clientWidth}px;`
           );
         }
+
+        // Cambiar a visible los minutos cuando esta fuera de la barra
+        $onMinute.setAttribute(
+          "style",
+          "display: block;"
+        );
       };
+      
 
       // ------ AÑADE EL EVENTO AL HACER CLICK IZQUIEDO ------
       const evento = (e) => {
         if (e.buttons == 1) {
+          moveToPosition(e);
           d.addEventListener("mousemove", remove);
         }
       };
@@ -112,6 +172,7 @@
       // ------ REMUEVE EL EVENTO AL LEVANTAR EL MOUSE ------
       d.addEventListener("mouseup", () => {
         d.removeEventListener("mousemove", remove);
+        $onMinute.removeAttribute("style");
         console.log("removido");
       });
 
