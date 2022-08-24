@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="normalize.css">
     <style>
       body {
         background-color: rgb(0, 0, 0);
@@ -32,12 +33,6 @@
         border-radius: 100px;
       }
 
-      /* .centrar {
-        position: relative;
-        left: 200px;
-        top: 400px;
-      } */
-
       .pointer {
         position: relative;
         width: 14px;
@@ -64,14 +59,16 @@
     </style>
   </head>
   <body>
+    <p>cececcwcwrc</p>
     <div class="container">
-      <div class="progress centrar">
+      <div class="progress">
         <div class="pointer">
           <div class="onMinute"></div>
         </div>
       </div>
     </div>
 
+    <p>cececcwcwrc</p>
     <script>
       const d = document,
         $progress = d.querySelector(".progress"),
@@ -86,6 +83,7 @@
       // Solo falta que se mueva el puntero al hacer click sin necesidad de moverlo manualmente.
       const moveToPosition = (e) => {
         // Posicion del puntero respecto al elemento.
+        console.log(e.pageX);
         let pointerPosition = e.pageX - $container.offsetLeft;
 
         if (pointerPosition > 7 && pointerPosition < progressInfo.width - 7) {
@@ -104,8 +102,6 @@
           );
         }
 
-        // e.pageX - $container.offsetLeft
-        // e.offsetX
         $progress.setAttribute(
           "style",
           `background-image: linear-gradient(to right ,white ${pointerPosition}px, black -100%);`
